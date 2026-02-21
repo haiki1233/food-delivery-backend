@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
 
 app.use('/api/auth', authRouter);
 app.use('/api/restaurants', restaurantRouter);
-app.use('/api/restaurants/:restaurantId/foods', foodRouter);
+app.use('/api/restaurants/:restaurantId', foodRouter);
 app.use('/api/foods', foodRouter);  // Dùng cho trường hợp muốn lấy món ăn mà không quan tâm quán
 app.use('/api/orders', orderRouter);
 
