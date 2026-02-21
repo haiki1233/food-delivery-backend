@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  # Dịch vụ 1: Backend API của em
+  api:
+    build: .  # Xây dựng từ dockerfile ở thư mục hiện tại
+    ports:
+      - "3000:3000" # Nối cổng
+    env_file:
+      - .env  # Tự động đọc file .env
+    restart: always # Nếu app bị crash, tự động khởi động lại
+    container_name: food-delivery-container
+    environment:
+      # Ghi đè biến REDIS_URL để trỏ vào thẳng thằng redis bên dưới
+      - REDIS_URL=redis://my-redis:6379
+    depends_on:
+      - my-redis  # Bảo Docker: "chạy Redis trước rồi mới chạy app"
+
+  # Redis chạy cục bộ (Offline)
+  my-redis:
+    image: redis:alpine   # Tải image Redis chính chủ về dùng
+    ports:
+      - "6379:6379"
