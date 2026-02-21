@@ -14,7 +14,11 @@ exports.getAllFood = async (req, res) => {
 
         // Ngược lại: lấy toàn bộ món của tất cả quán (Otherwise: Get all foods everywhere)
 
-        const foods = await Food.find(filter);
+        const foods = await Food.find(filter)
+            .populate({
+                path: 'restaurantId',
+                select: 'name cuisine ratingAverage imageUrl'
+            });
 
         res.status(200).json({
             status: 'success',
