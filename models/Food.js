@@ -9,7 +9,7 @@ const foodSchema = new mongoose.Schema({
     // Quan trọng : liên kết bảng (Relationship)
     // Món này thuộc về nhà hàng nào? (Which restaurant dose this food belong to?)
     restaurantId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'Restaurant',  // Trỏ tới model Restaurant
         required: true
     },
