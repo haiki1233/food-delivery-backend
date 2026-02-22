@@ -1,4 +1,5 @@
 const Food = require('../models/Food');
+const Restaurant = require('../models/Restaurant');
 
 // API: lấy danh sách món ăn (Get all foods)
 exports.getAllFood = async (req, res) => {
@@ -14,12 +15,17 @@ exports.getAllFood = async (req, res) => {
 
         // Ngược lại: lấy toàn bộ món của tất cả quán (Otherwise: Get all foods everywhere)
 
-        const foods = await Food.find(filter);
+        const foods = await Food.find(filter)
+            .populate({
+                path: 'restaurantId'
+            });
 
         res.status(200).json({
             status: 'success',
             results: foods.length,
-            data: { foods }
+            data: {
+                foods
+            }
         });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
