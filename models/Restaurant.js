@@ -50,13 +50,18 @@ const restaurantSchema = new mongoose.Schema({
         default: true
     },
 
-
     // Link ảnh bìa (Cover image)
     imageUrl: String
 }, {
     timestamps: true,   //  Tự động tạo createdAt, updateAt
     toJSON: { virtuals: true },     // cho phép hiện trường ảo (Virtual fields)
     toObject: { virtuals: true }
+});
+
+restaurantSchema.virtual('foods', {
+    ref: 'Food',
+    localField: '_id',
+    foreignField: 'restaurantId'
 });
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);

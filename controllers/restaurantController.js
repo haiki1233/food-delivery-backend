@@ -174,3 +174,22 @@ exports.getRestaurantsWithin = async (req, res) => {
         res.status(500).json({ status: 'fail', message: error.message });
     }
 };
+
+exports.getRestaurantById = async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findById(req.params.id)
+            .populate({
+                path: 'foods',
+            });
+
+        res.status(200).json({
+            status: 'success',
+            data: restaurant
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        });
+    }
+};

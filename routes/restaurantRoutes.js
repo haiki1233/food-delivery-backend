@@ -80,4 +80,6 @@ router.route('/')
     .get(restaurantController.getAllRestaurants)
     .post(restaurantController.createRestaurant);
 
+router.route('/:id').get(restaurantController.getRestaurantById);
+
 module.exports = router;
