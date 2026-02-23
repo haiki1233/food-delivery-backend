@@ -104,7 +104,11 @@ exports.createOrder = async (req, res) => {
 exports.getMyOrders = async (req, res) => {
     try {
         // Tìm đơn hàng của user đang đăng nhập (Find orders by current user)
-        const orders = await Order.find({ user: req.user.userId });
+        const orders = await Order.find({ user: req.user.userId })
+            .populate({
+                path: 'items.food',
+                select: 'name price image'
+            });
 
         res.status(200).json({
             status: 'success',
