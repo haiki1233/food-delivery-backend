@@ -302,7 +302,7 @@ exports.paymentSuccess = async (req, res) => {
                         <h1 style="color: green;">✅ Thanh toán thành công!</h1>
                         <p>Cảm ơn bạn đã đặt món. Đơn hàng <b>#${orderId}</b> đã được xác nhận</p>
                         <p>Mã giao dịch Stripe: ${session.payment_intent}</p>
-                        <a href="http://locallhost:5173/my-orders" style="padding: 10px 20px; background: blue; color: white; text-decoration: none; boder-radius: 5px;">Quay lại</a>
+                        <a href="http://localhost:5173/my-orders" style="padding: 10px 20px; background: blue; color: white; text-decoration: none; boder-radius: 5px;">Quay lại</a>
                     </body>
                 </html>
             `);
@@ -325,4 +325,42 @@ exports.paymentCancel = async (req, res) => {
             </body>
         </html>
     `);
+};
+
+// API: Lấy tất cả đơn hàng (admin only)
+exports.getAllOrders = async (req,res) => {
+    try {
+        // Phân trang
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page -1) * limit;
+
+        // Lấy dữ liệu
+        const orders = await Order.find()
+            .populate('user', 'username email role')
+            .populate('restaurant', 'name address')
+            .populate({
+                path: 'items.food',
+                select: 'name price image'
+            })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const totalOrders = await Order.countDocuments();
+
+        res.status(200).json({
+            status: 'success',
+            results: orders.length,
+            totalOrders,
+            currentPage: page,
+            totalPages: Math.ceil(totalOrders / limit),
+            data: { orders }
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        });
+    }
 };

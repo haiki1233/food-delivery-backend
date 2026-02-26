@@ -1,6 +1,6 @@
 const express = require('express');
 const orderController = require('../controllers/orderController');
-const { verifyToken } = require('../middleware/auth');
+const { verifyToken, checkAdmin } = require('../middleware/auth');
 
 
 const router = express.Router();
@@ -116,7 +116,8 @@ router.use(verifyToken);
 
 router.post('/', orderController.createOrder);
 router.get('/my-orders', orderController.getMyOrders);
-router.get('/stats', orderController.getOrderStats)
+router.get('/admin', checkAdmin, orderController.getAllOrders);
+router.get('/stats', orderController.getOrderStats);
 router.patch('/:id/status', orderController.updateOrderStatus);
 router.post('/checkout-session/:orderId', orderController.getCheckoutSession);
 
