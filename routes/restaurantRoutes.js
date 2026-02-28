@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const restaurantController = require('../controllers/restaurantController');
 const foodRouter = require('./foodRoutes');
-
+const { verifyToken, checkAdmin } = require('../middleware/auth')
 
 // KỸ THUẬT MOUNT ROUTER (GẮN ROUTER)
 // Nếu gặp đường dẫn dạng này, hãy chuyển hướng sang foodRouter xử lý
@@ -81,5 +81,6 @@ router.route('/')
     .post(restaurantController.createRestaurant);
 
 router.route('/:id').get(restaurantController.getRestaurantById);
+router.route('/:id').delete(verifyToken, checkAdmin, restaurantController.deleteRestaurant);
 
 module.exports = router;

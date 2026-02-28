@@ -193,3 +193,38 @@ exports.getRestaurantById = async (req, res) => {
         });
     }
 };
+
+// API: XÓA NHÀ HÀNG
+exports.deleteRestaurant = async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findByIdAndDelete(req.params.id);
+
+        if (!restaurant) {
+            return res.status(404).json({ 
+                status: 'fail',
+                message: 'Không tìm thấy nhà hàng!' 
+            });
+        }
+
+        // XÓA CACHE LIÊN QUAN ĐẾN RESTAURANT LIST
+        try {
+            const keys = await redis.keys('restaurant:*');
+            if (keys.length > 0) {
+                await redis.del(keys);
+                console.log('🧹 Đã xóa cache sau khi delete restaurant');
+            }
+        } catch (err) {
+            console.error('lỗi khi xóa cache:', err);
+        }
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Bạn xóa thành công!'
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        });
+    }
+}
